@@ -261,6 +261,14 @@ endif
 # Set build time variables including version details
 LDFLAGS := $(shell hack/version.sh)
 
+# Check if LDFLAGS was able to identify a Semantic Version tag in the repository, or not;
+# avoid building if that's true (see hack/version.sh for more information).
+SEMVER_CHECK = $(findstring GIT_VERSION should be a valid Semantic Version, $(LDFLAGS))
+ifneq ($(SEMVER_CHECK),)
+    $(warning SEMVER_CHECK: $(LDFLAGS))
+    $(error Build halted)
+endif
+
 all: test managers clusterctl
 
 help:  # Display this help
